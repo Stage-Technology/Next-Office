@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Next Office",
+  "mainBinaryName": "Next Office",
+  "version": "0.4.1",
+  "identifier": "com.nextoffice.slides",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Next Office",
+        "width": 1400,
+        "height": 880,
+        "minWidth": 900,
+        "minHeight": 600,
+        "center": true,
+        "decorations": false,
+        "shadow": true,
+        "dragDropEnabled": false,
+        "backgroundColor": "#f6f6fb"
+      }
+    ],
+    "security": {
+      "csp": null,
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$APPLOCALDATA/media/**"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": [
+      "nsis",
+      "msi"
+    ],
+    "publisher": "Next Office",
+    "category": "Productivity",
+    "shortDescription": "Documents, presentations and spreadsheets",
+    "longDescription": "Next Office: Slides (a PowerPoint-style presentation editor that opens and exports .pptx files), Next Spreadsheet (an Excel-style spreadsheet that opens and saves .xlsx and .csv files) and Next Writer (a Word-style word processor that opens and saves .docx files).",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "fileAssociations": [
+      {
+        "ext": [
+          "nxsheet"
+        ],
+        "name": "Next Spreadsheet Workbook",
+        "description": "Next Spreadsheet Workbook",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "nxslides"
+        ],
+        "name": "Next Office Presentation",
+        "description": "Next Office Presentation",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "nxdoc"
+        ],
+        "name": "Next Writer Document",
+        "description": "Next Writer Document",
+        "role": "Editor"
+      }
+    ],
+    "windows": {
+      "webviewInstallMode": {
+        "type": "downloadBootstrapper"
+      },
+      "nsis": {
+        "installMode": "currentUser",
+        "installerHooks": "windows/hooks.nsh",
+        "headerImage": "windows/nsis-header.bmp",
+        "sidebarImage": "windows/nsis-sidebar.bmp"
+      },
+      "wix": {
+        "bannerPath": "windows/wix-banner.bmp",
+        "dialogImagePath": "windows/wix-dialog.bmp"
+      }
+    }
+  }
+}

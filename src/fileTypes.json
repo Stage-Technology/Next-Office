@@ -1,0 +1,21 @@
+{
+  "$comment": "Every file type Next Office opens. Add new ones here: the app registers them with Windows, opens them in the right app and asks the user (once) about making Next Office their default. Run `npm run sync:file-types` (app:build does it) to update the installer. `native` types are Next Office's own and are claimed by the installer.",
+  "types": [
+    { "ext": "xlsx", "app": "sheet", "name": "Excel Workbook" },
+    { "ext": "xlsm", "app": "sheet", "name": "Excel Macro-Enabled Workbook" },
+    { "ext": "csv", "app": "sheet", "name": "CSV File" },
+    { "ext": "tsv", "app": "sheet", "name": "Tab-Separated Values File" },
+    { "ext": "nxsheet", "app": "sheet", "name": "Next Spreadsheet Workbook", "native": true },
+    { "ext": "pptx", "app": "slides", "name": "PowerPoint Presentation" },
+    { "ext": "ppsx", "app": "slides", "name": "PowerPoint Slide Show" },
+    { "ext": "potx", "app": "slides", "name": "PowerPoint Template" },
+    { "ext": "pptm", "app": "slides", "name": "PowerPoint Macro-Enabled Presentation" },
+    { "ext": "nxslides", "app": "slides", "name": "Next Office Presentation", "native": true },
+    { "ext": "docx", "app": "doc", "name": "Word Document" },
+    { "ext": "docm", "app": "doc", "name": "Word Macro-Enabled Document" },
+    { "ext": "dotx", "app": "doc", "name": "Word Template" },
+    { "ext": "doc", "app": "doc", "name": "Word 97-2003 Document" },
+    { "ext": "dot", "app": "doc", "name": "Word 97-2003 Template" },
+    { "ext": "nxdoc", "app": "doc", "name": "Next Writer Document", "native": true }
+  ]
+}

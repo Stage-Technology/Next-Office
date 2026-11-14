@@ -1,0 +1,53 @@
+/*
+ * Per-app accents for the suite. Next Office Slides uses the brand indigo from tokens.css; Next Spreadsheet
+ * and Next Writer keep their own colour so the apps read apart, as in other office suites. Each accent comes
+ * as the same five roles as the brand tokens, light and dark, with the same contrast targets:
+ * accent ≥ 3:1 on surface, ink ≥ 4.5:1 on surface and subtle, on-accent ≥ 4.5:1 on accent.
+ * This is the only other file, besides tokens.css, that holds raw colour values for the chrome.
+ */
+:root,
+[data-theme='light'] {
+  --app-slides: var(--brand);
+  --app-sheet: #107c41;
+  --app-sheet-hover: #0b5a2f;
+  --app-sheet-subtle: #dff3e8;
+  --app-sheet-ink: #0b5a2f;
+  --app-sheet-on: #ffffff;
+  --app-doc: #185abd;
+  --app-doc-hover: #103f91;
+  --app-doc-subtle: #dbe7fb;
+  --app-doc-ink: #103f91;
+  --app-doc-on: #ffffff;
+}
+
+[data-theme='dark'] {
+  --app-slides: var(--brand);
+  --app-sheet: #4cc38a;
+  --app-sheet-hover: #6fd3a2;
+  --app-sheet-subtle: #17352a;
+  --app-sheet-ink: #86e0b4;
+  --app-sheet-on: #06281a;
+  --app-doc: #7aa7f5;
+  --app-doc-hover: #9bbcf8;
+  --app-doc-subtle: #1b2a47;
+  --app-doc-ink: #a9c6fa;
+  --app-doc-on: #0a1a3a;
+}
+
+/* Inside an app, its accent becomes the brand colour for all shared chrome (ribbon, buttons, focus). */
+.sheet-app {
+  --brand: var(--app-sheet);
+  --brand-hover: var(--app-sheet-hover);
+  --brand-subtle: var(--app-sheet-subtle);
+  --brand-ink: var(--app-sheet-ink);
+  --on-brand: var(--app-sheet-on);
+  --focus-ring: var(--app-sheet);
+}
+.doc-app {
+  --brand: var(--app-doc);
+  --brand-hover: var(--app-doc-hover);
+  --brand-subtle: var(--app-doc-subtle);
+  --brand-ink: var(--app-doc-ink);
+  --on-brand: var(--app-doc-on);
+  --focus-ring: var(--app-doc);
+}

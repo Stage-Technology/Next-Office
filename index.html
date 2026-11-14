@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f6f6fb" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14141d" media="(prefers-color-scheme: dark)" />
+    <!-- Light/dark before the first paint, so a dark start never flashes white. src/theme.ts takes over once loaded. -->
+    <script>
+      (function () {
+        var s = null;
+        try {
+          s = localStorage.getItem('next-office:theme');
+        } catch (e) {}
+        var dark = s === 'dark' || (s !== 'light' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      })();
+    </script>
+    <link rel="preload" href="/stage-tech-logo.png" as="image" />
+    <title>Next Office</title>
+    <!-- Splash screen: plain HTML and CSS so it shows the moment the window opens, before the app's code loads.
+         src/splash.ts fades it out as soon as the app is ready (shown at least briefly, never long; a click skips it). -->
+    <style>
+      /* Brand values inline: tokens.css hasn't loaded yet. Light = surface-100/ink, dark = the dark tokens. */
+      #splash {
+        --sp-bg: #f6f6fb;
+        --sp-ink: #16152b;
+        --sp-muted: #55556e;
+        --sp-track: #e0e0ec;
+        --sp-brand: #4338ca;
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: var(--sp-bg);
+        font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+        color: var(--sp-ink);
+        user-select: none;
+        cursor: default;
+        transition: opacity 0.18s ease-out;
+      }
+      [data-theme='dark'] #splash {
+        --sp-bg: #14141d;
+        --sp-ink: #ededf6;
+        --sp-muted: #a6a6bd;
+        --sp-track: #2e2e3e;
+        --sp-brand: #8f8cf7;
+      }
+      #splash.splash-hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .splash-main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+        animation: splash-in 0.35s ease-out both;
+      }
+      .splash-app {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .splash-mark {
+        display: block;
+        width: 48px;
+        height: 48px;
+      }
+      .splash-name {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+      .splash-bar {
+        position: relative;
+        width: 160px;
+        height: 3px;
+        overflow: hidden;
+        border-radius: 3px;
+        background: var(--sp-track);
+      }
+      .splash-bar::after {
+        content: '';
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 40%;
+        border-radius: 3px;
+        background: var(--sp-brand);
+        animation: splash-load 1.1s ease-in-out infinite;
+      }
+      .splash-by {
+        position: absolute;
+        bottom: 44px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        animation: splash-in 0.35s 0.08s ease-out both;
+      }
+      .splash-by img {
+        display: block;
+        height: 30px;
+        width: auto;
+      }
+      .splash-by span {
+        font-size: 12px;
+        letter-spacing: 0.4px;
+        color: var(--sp-muted);
+      }
+      @keyframes splash-in {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+      }
+      @keyframes splash-load {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(250%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .splash-main,
+        .splash-by {
+          animation: none;
+        }
+        .splash-bar::after {
+          animation: none;
+          width: 100%;
+          opacity: 0.35;
+        }
+      }
+      @media (max-height: 420px) {
+        .splash-by {
+          position: static;
+          margin-top: 28px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="splash" role="status" aria-label="Loading Next Office" data-tauri-drag-region>
+      <div class="splash-main" data-tauri-drag-region>
+        <div class="splash-app" data-tauri-drag-region>
+          <img class="splash-mark" src="/favicon.svg" alt="" width="48" height="48" draggable="false" data-tauri-drag-region />
+          <span class="splash-name" data-tauri-drag-region>Next Office</span>
+        </div>
+        <div class="splash-bar" aria-hidden="true"></div>
+      </div>
+      <div class="splash-by" data-tauri-drag-region>
+        <img src="/stage-tech-logo.png" alt="Stage" width="104" height="30" draggable="false" data-tauri-drag-region />
+        <span data-tauri-drag-region>By Stage Tech</span>
+      </div>
+    </div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

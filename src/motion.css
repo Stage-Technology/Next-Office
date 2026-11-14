@@ -1,0 +1,144 @@
+/*
+ * Interaction motion for the whole suite: short, quiet feedback on hover, press and things that appear.
+ * Loaded after the app styles; rules use :where() where they only add transitions, so they never win
+ * over an app's own look. All of it is left out when Windows is set to show fewer animations; slide
+ * transitions, animations and other motion that is part of the content are not affected.
+ */
+:root {
+  --motion-fast: 0.12s;
+  --motion-base: 0.18s;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Hover and selection: colors ease instead of snapping ---- */
+
+  :where(
+      button,
+      .rb-btn,
+      .ribbon-tab,
+      .file-tab,
+      .menu-item,
+      .thumb-row,
+      .recent-row,
+      .start-rail-item,
+      .sg-tab,
+      .launcher-file,
+      .swatch,
+      .layout-item,
+      .shape-item,
+      .theme-item,
+      .transition-item,
+      .effect-item,
+      .chart-type,
+      .size-item,
+      .dw-style-btn,
+      .continue-card,
+      .open-browse,
+      .doc-title,
+      .tpl-thumb,
+      input,
+      select,
+      textarea
+    ) {
+    transition:
+      background-color var(--motion-fast) ease,
+      border-color var(--motion-fast) ease,
+      color var(--motion-fast) ease,
+      box-shadow var(--motion-fast) ease,
+      transform var(--motion-fast) var(--ease-out);
+  }
+
+  /* ---- Press: buttons give a little under the pointer ---- */
+
+  .primary-btn:active:not(:disabled),
+  .secondary-btn:active:not(:disabled),
+  .icon-btn:active:not(:disabled),
+  .add-btn:active:not(:disabled),
+  .add-slide:active:not(:disabled),
+  .present-btn:active:not(:disabled),
+  .home-btn:active,
+  .sg-tab-add:active {
+    transform: scale(0.96);
+  }
+  .rb-btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .launcher-tile:active:not(:disabled) {
+    transform: translateY(0) scale(0.99);
+  }
+
+  /* Cards lift slightly toward the pointer (the thumbnail has its own transition list, so it is repeated here). */
+  .tpl-thumb {
+    transition:
+      border-color var(--motion-fast) ease,
+      box-shadow var(--motion-fast) ease,
+      transform var(--motion-fast) var(--ease-out);
+  }
+  .tpl-card:hover .tpl-thumb,
+  .continue-card:hover .tpl-thumb {
+    transform: translateY(-1px);
+  }
+  .tpl-card:active .tpl-thumb {
+    transform: scale(0.98);
+  }
+
+  /* ---- Things that appear ---- */
+
+  /* Menus, drop-downs and popovers. */
+  .menu {
+    animation: motion-pop var(--motion-fast) var(--ease-out);
+  }
+  /* Dialogs (the backdrop already fades in). */
+  .modal {
+    animation: motion-dialog var(--motion-base) var(--ease-out);
+  }
+  /* Writer's find bar. */
+  .dw-findbar {
+    animation: motion-pop var(--motion-base) var(--ease-out);
+  }
+  /* Ribbon: a tab's commands settle in when it is picked. */
+  .ribbon-body > * {
+    animation: motion-rise var(--motion-base) var(--ease-out);
+  }
+  /* Screens: the launcher, an app and Slides' start page fade in when shown. */
+  .launcher,
+  .app,
+  .start {
+    animation: motion-fade var(--motion-base) ease-out;
+  }
+  /* The launcher's tiles follow one after another. */
+  .launcher-tile {
+    animation: motion-rise 0.24s var(--ease-out) backwards;
+  }
+  .launcher-tile:nth-child(2) {
+    animation-delay: 0.03s;
+  }
+  .launcher-tile:nth-child(3) {
+    animation-delay: 0.06s;
+  }
+
+  @keyframes motion-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes motion-pop {
+    from {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+  @keyframes motion-dialog {
+    from {
+      opacity: 0;
+      transform: scale(0.97);
+    }
+  }
+  @keyframes motion-rise {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+  }
+}

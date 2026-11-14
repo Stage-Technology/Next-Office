@@ -1,0 +1,138 @@
+/* Generated from src/assets/brand/tokens.json by scripts/build-tokens.mjs. Do not edit by hand. */
+
+:root,
+[data-theme="light"] {
+  --surface: #ffffff;
+  --surface-100: #f6f6fb;
+  --surface-200: #ececf4;
+  --surface-300: #e0e0ec;
+  --border: #d3d3e0;
+  --border-strong: #8a8aa3;
+  --ink: #16152b;
+  --ink-muted: #55556e;
+  --ink-disabled: #9a9ab0;
+  --brand: #4338ca;
+  --brand-hover: #3730a3;
+  --brand-subtle: #ecebfd;
+  --on-brand: #ffffff;
+  --brand-ink: #3730a3;
+  --focus-ring: var(--brand);
+  --guide: #d9480f;
+  --selection: #4338ca;
+  --success: #1d7a4b;
+  --warning: #a15500;
+  --danger: #c42b2b;
+  --slide-bg: #ffffff;
+  --overlay: rgba(12, 11, 30, 0.5);
+  --shadow-slide: 0 1px 2px rgba(22, 21, 43, 0.12), 0 4px 16px rgba(22, 21, 43, 0.08);
+  --shadow-popover: 0 8px 28px rgba(22, 21, 43, 0.16);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --surface: #1b1b26;
+  --surface-100: #14141d;
+  --surface-200: #242432;
+  --surface-300: #2e2e3e;
+  --border: #383849;
+  --border-strong: #6e6e88;
+  --ink: #ededf6;
+  --ink-muted: #a6a6bd;
+  --ink-disabled: #5e5e75;
+  --brand: #8f8cf7;
+  --brand-hover: #a9a6ff;
+  --brand-subtle: #26244d;
+  --on-brand: #12103a;
+  --brand-ink: #b9b7ff;
+  --focus-ring: var(--brand);
+  --guide: #d9480f;
+  --selection: #4338ca;
+  --success: #4cc38a;
+  --warning: #f0a54a;
+  --danger: #ff7070;
+  --slide-bg: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --shadow-slide: 0 1px 2px rgba(0, 0, 0, 0.5), 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-popover: 0 8px 28px rgba(0, 0, 0, 0.55);
+  color-scheme: dark;
+}
+
+:root {
+  --font-sans: "Plus Jakarta Sans", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", Consolas, ui-monospace, monospace;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 9999px;
+  --size-ribbon: 96px;
+  --size-tabrow: 36px;
+  --size-control: 28px;
+  --size-thumb: 168px;
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("../assets/brand/fonts/PlusJakartaSans-Variable.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Type styles */
+.t-display {
+  font-family: var(--font-sans);
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.t-title {
+  font-family: var(--font-sans);
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.t-heading {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 700;
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+.t-ui {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+}
+.t-caption {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+}
+.t-label {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+}

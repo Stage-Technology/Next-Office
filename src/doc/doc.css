@@ -1,0 +1,867 @@
+/* ---------- Next Writer ---------- */
+/*
+ * The accent (--brand…) comes from src/styles/app-accents.css. Pages are the document itself: like a
+ * slide, they stay white with black text in both themes; only the canvas around them follows the chrome.
+ */
+.launcher-tile.app-doc {
+  --tile: var(--app-doc);
+  --tile-on: var(--app-doc-on);
+}
+.launcher-file-icon.app-doc,
+.launch-loading.app-doc {
+  color: var(--app-doc);
+}
+
+.dw-main {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Pages on a grey canvas */
+.dw-scroll {
+  flex: 1;
+  overflow: auto;
+  padding: 20px 24px 40px;
+  background: var(--surface-300);
+}
+.dw-sizer {
+  position: relative;
+  margin: 0 auto;
+}
+.dw-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+/*
+ * The document never inherits the chrome's type: these are the values pages were laid out with before the
+ * design system, so text without its own font, and the pagination measured from it, stay unchanged.
+ */
+.dw-canvas {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: normal;
+  -webkit-font-smoothing: auto;
+}
+.dw-page {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: var(--slide-bg);
+  box-shadow: var(--shadow-slide);
+}
+.dw-hf-zone {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: #000;
+  cursor: default;
+}
+.dw-hf-bottom {
+  justify-content: flex-end;
+}
+.dw-hf-line {
+  white-space: pre-wrap;
+  font: 10pt Calibri, 'Segoe UI', Tahoma, sans-serif;
+  line-height: 1.3;
+}
+
+/* The editor lies over the pages; only its blocks take the pointer, so margins and gaps reach the pages. */
+.dw-host {
+  position: absolute;
+  pointer-events: none;
+}
+.dw-host .ProseMirror {
+  position: relative;
+  min-height: inherit;
+  outline: none;
+  color: #000;
+  caret-color: #000;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  font-variant-ligatures: none;
+  pointer-events: none;
+  /* Margins of bordered paragraphs stay inside the editor. */
+  display: flow-root;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.dw-host .ProseMirror > * {
+  pointer-events: auto;
+}
+.dw-host .ProseMirror ::selection {
+  background: #b4d0f7;
+}
+.dw-spacer {
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+.dw-measuring .dw-spacer {
+  display: none !important;
+}
+.dw-painting .ProseMirror > * {
+  cursor: copy;
+}
+
+/* Lists: the marker hangs 0.25" before the text, which steps in 0.5" per level (Word's layout). */
+.dw-p[data-list] {
+  position: relative;
+}
+.dw-p[data-list]::before {
+  content: attr(data-marker);
+  position: absolute;
+  white-space: pre;
+  font-style: normal;
+  text-decoration: none;
+  text-indent: 0;
+}
+.dw-p[data-list][data-level='0'] { padding-inline-start: 0.5in; }
+.dw-p[data-list][data-level='1'] { padding-inline-start: 1in; }
+.dw-p[data-list][data-level='2'] { padding-inline-start: 1.5in; }
+.dw-p[data-list][data-level='3'] { padding-inline-start: 2in; }
+.dw-p[data-list][data-level='4'] { padding-inline-start: 2.5in; }
+.dw-p[data-list][data-level='5'] { padding-inline-start: 3in; }
+.dw-p[data-list][data-level='6'] { padding-inline-start: 3.5in; }
+.dw-p[data-list][data-level='7'] { padding-inline-start: 4in; }
+.dw-p[data-list][data-level='8'] { padding-inline-start: 4.5in; }
+.dw-p[data-list][data-level='0']::before { inset-inline-start: var(--dw-marker, 0.25in); }
+.dw-p[data-list][data-level='1']::before { inset-inline-start: var(--dw-marker, 0.75in); }
+.dw-p[data-list][data-level='2']::before { inset-inline-start: var(--dw-marker, 1.25in); }
+.dw-p[data-list][data-level='3']::before { inset-inline-start: var(--dw-marker, 1.75in); }
+.dw-p[data-list][data-level='4']::before { inset-inline-start: var(--dw-marker, 2.25in); }
+.dw-p[data-list][data-level='5']::before { inset-inline-start: var(--dw-marker, 2.75in); }
+.dw-p[data-list][data-level='6']::before { inset-inline-start: var(--dw-marker, 3.25in); }
+.dw-p[data-list][data-level='7']::before { inset-inline-start: var(--dw-marker, 3.75in); }
+.dw-p[data-list][data-level='8']::before { inset-inline-start: var(--dw-marker, 4.25in); }
+
+/* Checklists: a box where the bullet goes (a widget from plugins.ts, so it can be clicked), placed like
+   the markers above; inline check boxes (Word's Check Box control) are drawn the same way, in the text.
+   Both use the text's colour, so they print like the text. */
+.dw-p[data-list='check']::before {
+  content: none;
+}
+.dw-check,
+.dw-cb {
+  box-sizing: border-box;
+  width: 0.8em;
+  height: 0.8em;
+  border: max(1px, 0.075em) solid currentColor;
+  border-radius: 0.14em;
+  font-style: normal;
+  text-indent: 0;
+  cursor: pointer;
+  user-select: none;
+}
+.dw-check {
+  position: absolute;
+  /* Centred on the first line. */
+  margin-top: 0.25em;
+  margin-top: calc((1lh - 0.8em) / 2 + 0.03em);
+}
+.dw-cb {
+  position: relative;
+  display: inline-block;
+  margin: 0 0.08em;
+  vertical-align: -0.1em;
+}
+.dw-check.on::after,
+.dw-cb.on::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 0.2em;
+  height: 0.42em;
+  border: solid currentColor;
+  border-width: 0 0.1em 0.1em 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+/* The character inside an inline check box goes with copied text but isn't drawn. */
+.dw-cb-char {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.dw-host .dw-check:hover,
+.dw-host .dw-cb:hover {
+  background: var(--brand-subtle);
+}
+.dw-p[data-list='check'][data-level='0'] > .dw-check { inset-inline-start: var(--dw-marker, 0.25in); }
+.dw-p[data-list='check'][data-level='1'] > .dw-check { inset-inline-start: var(--dw-marker, 0.75in); }
+.dw-p[data-list='check'][data-level='2'] > .dw-check { inset-inline-start: var(--dw-marker, 1.25in); }
+.dw-p[data-list='check'][data-level='3'] > .dw-check { inset-inline-start: var(--dw-marker, 1.75in); }
+.dw-p[data-list='check'][data-level='4'] > .dw-check { inset-inline-start: var(--dw-marker, 2.25in); }
+.dw-p[data-list='check'][data-level='5'] > .dw-check { inset-inline-start: var(--dw-marker, 2.75in); }
+.dw-p[data-list='check'][data-level='6'] > .dw-check { inset-inline-start: var(--dw-marker, 3.25in); }
+.dw-p[data-list='check'][data-level='7'] > .dw-check { inset-inline-start: var(--dw-marker, 3.75in); }
+.dw-p[data-list='check'][data-level='8'] > .dw-check { inset-inline-start: var(--dw-marker, 4.25in); }
+/* "Don't add space between paragraphs of the same style" (on for list items, like Word's List
+   Paragraph) and paragraphs sharing one border box: classes from the decorations in plugins.ts. */
+.dw-p.dw-no-before {
+  padding-top: 0 !important;
+}
+.dw-p.dw-no-after {
+  padding-bottom: 0 !important;
+}
+.dw-p.dw-box-no-before {
+  margin-top: 0 !important;
+}
+.dw-p.dw-box-no-after {
+  margin-bottom: 0 !important;
+}
+.dw-p.dw-join-up {
+  margin-top: 0 !important;
+  padding-top: var(--dw-join-top) !important;
+  border-top: none !important;
+}
+.dw-p.dw-join-down {
+  margin-bottom: 0 !important;
+  padding-bottom: var(--dw-join-bottom) !important;
+  border-bottom: none !important;
+}
+
+.dw-hr hr {
+  margin: 6px 0;
+  border: 0;
+  border-top: 1px solid #000;
+}
+.dw-page-break {
+  height: 2px;
+  margin: 2px 0;
+}
+.dw-marks .dw-page-break {
+  display: flex;
+  align-items: center;
+  height: 16px;
+  color: #3c78d8;
+  font: 9pt 'Segoe UI', sans-serif;
+}
+.dw-marks .dw-page-break::before,
+.dw-marks .dw-page-break::after {
+  content: '';
+  flex: 1;
+  border-top: 1px dotted currentColor;
+}
+.dw-marks .dw-p::after {
+  content: '¶';
+  color: #3c78d8;
+  font-weight: 400;
+  font-style: normal;
+}
+.dw-link {
+  color: #0563c1;
+  text-decoration: underline;
+}
+
+/* Pictures */
+.dw-imgwrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+  vertical-align: bottom;
+}
+.dw-img {
+  max-width: 100%;
+  object-fit: contain;
+}
+.dw-imgwrap.selected .dw-img {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.dw-img-handle {
+  position: absolute;
+  bottom: -5px;
+  inset-inline-end: -5px;
+  display: none;
+  width: 11px;
+  height: 11px;
+  border: 1px solid var(--brand);
+  border-radius: 2px;
+  background: #fff;
+  cursor: nwse-resize;
+}
+[dir='rtl'] .dw-img-handle {
+  cursor: nesw-resize;
+}
+.dw-imgwrap.selected .dw-img-handle {
+  display: block;
+}
+.dw-host .ProseMirror-selectednode {
+  outline: 2px solid var(--brand);
+}
+.dw-host .dw-imgwrap.ProseMirror-selectednode {
+  outline: none;
+}
+
+/* Tables (with prosemirror-tables' column resizing and cell selection) */
+.dw-host .tableWrapper {
+  margin: 0 0 8pt;
+  overflow-x: auto;
+}
+.dw-host table {
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.dw-host td,
+.dw-host th {
+  position: relative;
+  min-width: 1em;
+  padding: 0 7px;
+  border: 1px solid #000;
+  vertical-align: top;
+  box-sizing: border-box;
+  text-align: start;
+}
+.dw-host td .dw-p,
+.dw-host th .dw-p {
+  padding-bottom: 0;
+}
+.dw-host th .dw-p {
+  font-weight: 700;
+}
+.dw-host .column-resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -2px;
+  z-index: 20;
+  width: 4px;
+  background: var(--brand);
+  pointer-events: none;
+}
+.dw-host .ProseMirror.resize-cursor > * {
+  cursor: col-resize;
+}
+.dw-host .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(24, 90, 189, 0.15);
+  pointer-events: none;
+}
+.dw-host .selectedCell ::selection {
+  background: transparent;
+}
+
+/* Find */
+.dw-find {
+  background: rgba(255, 213, 0, 0.45);
+}
+.dw-find-current {
+  background: #ff9632;
+}
+.dw-findbar {
+  position: absolute;
+  top: 10px;
+  inset-inline-end: 28px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 400px;
+  max-width: calc(100% - 40px);
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-popover);
+}
+.dw-find-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.dw-find-row input {
+  flex: 1;
+  min-width: 0;
+  height: var(--size-control);
+  padding: 0 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+}
+.dw-find-row input:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+.dw-find-row .icon-btn.active {
+  background: var(--brand-subtle);
+  color: var(--brand-ink);
+}
+.dw-find-count {
+  min-width: 60px;
+  color: var(--ink-muted);
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+.dw-find-row .secondary-btn {
+  white-space: nowrap;
+}
+.dw-find-more {
+  align-self: flex-start;
+  font-size: 12px;
+}
+
+/* Ribbon pieces */
+.dw-styles {
+  display: grid;
+  grid-template-columns: repeat(5, 78px);
+  grid-auto-rows: 36px;
+  gap: 3px;
+}
+.dw-style-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-width: 0;
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  /* Style samples show the document's own fonts and colours, so they sit on the page's white. */
+  background: var(--slide-bg);
+  color: #000;
+  overflow: hidden;
+  text-align: start;
+}
+.dw-style-btn:hover {
+  border-color: var(--border-strong);
+}
+.dw-style-btn.active {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 1px var(--brand);
+}
+.dw-style-sample {
+  max-width: 100%;
+  overflow: hidden;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+.dw-style-name {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.dw-menu-narrow {
+  min-width: 210px;
+}
+.dw-menu-wide {
+  min-width: 320px;
+}
+.dw-two-line > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.dw-two-line small {
+  color: var(--ink-muted);
+  font-size: 11px;
+}
+.dw-table-picker {
+  padding: 6px;
+}
+.dw-table-picker-label {
+  margin-bottom: 6px;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+.dw-table-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 18px);
+  gap: 2px;
+}
+.dw-table-picker-grid button {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 1px;
+  background: var(--surface);
+}
+.dw-table-picker-grid button.on {
+  border-color: var(--brand);
+  background: var(--brand-subtle);
+}
+.dw-symbols {
+  display: grid;
+  grid-template-columns: repeat(8, 32px);
+  gap: 2px;
+  padding: 4px;
+}
+.dw-symbols button {
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  font-size: 16px;
+}
+.dw-symbols button:hover {
+  border-color: var(--border);
+  background: var(--surface-200);
+}
+.dw-spacing {
+  gap: 6px;
+  padding-top: 6px;
+}
+.dw-num {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dw-num > span:first-child {
+  min-width: 46px;
+}
+.dw-num input {
+  width: 64px;
+  height: var(--size-control);
+  padding: 0 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+}
+.dw-rot {
+  transform: rotate(90deg);
+}
+
+/* Split buttons: the command, and a narrow arrow that opens its gallery. */
+.dw-split {
+  display: inline-flex;
+}
+.dw-split > .rb-btn:first-child {
+  padding-inline-end: 2px;
+}
+.dw-split > .rb-btn:last-child {
+  padding: 0 1px;
+}
+
+/* Bullet, Numbering and Multilevel List libraries */
+.dw-list-menu {
+  padding-bottom: 2px;
+}
+.dw-list-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 64px);
+  gap: 4px;
+  padding: 4px 6px 6px;
+}
+.dw-list-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  height: 64px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  overflow: hidden;
+}
+.dw-list-tile:hover {
+  border-color: var(--border-strong);
+}
+.dw-list-tile.active {
+  border-color: var(--brand);
+  background: var(--brand-subtle);
+  box-shadow: 0 0 0 1px var(--brand);
+}
+.dw-list-none {
+  align-items: center;
+  color: var(--ink-muted);
+  font-size: 12px;
+}
+.dw-list-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.dw-list-mark {
+  min-width: 10px;
+}
+.dw-list-bar {
+  flex: 1;
+  min-width: 12px;
+  height: 2px;
+  background: var(--border-strong);
+}
+.dw-u-sample {
+  text-underline-offset: 3px;
+}
+.menu-item .dw-menu-check {
+  margin-inline-start: auto;
+  color: var(--brand);
+}
+.dw-menu-hint {
+  max-width: 220px;
+  line-height: 1.4;
+}
+
+/* Paragraph and Font dialogs */
+.dw-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 10px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.dw-fieldset legend {
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-muted);
+}
+.dw-select {
+  height: var(--size-control);
+  min-width: 0;
+  padding: 0 4px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+}
+.dw-field-row .dw-select {
+  flex: 1;
+}
+.dw-field-row > span:first-child {
+  white-space: nowrap;
+}
+.dw-check {
+  padding: 0;
+  gap: 8px;
+}
+.dw-grid3 {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 0.7fr;
+  gap: 10px 12px;
+}
+.dw-grid3 input {
+  width: 100%;
+  min-width: 0;
+}
+.dw-color-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.dw-color-row input[type='color'] {
+  width: 36px;
+  height: 28px;
+  padding: 1px;
+}
+.dw-color-row .secondary-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+.dw-color-row .secondary-btn.active {
+  border-color: var(--brand);
+  color: var(--brand-ink);
+}
+.dw-font-preview {
+  display: grid;
+  place-items: center;
+  height: 64px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  /* A sample of the document's text, on the page's white. */
+  background: var(--slide-bg);
+  color: #000;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.dw-dialog:has(.dw-fieldset) {
+  width: 520px;
+}
+.dw-status .dw-words {
+  white-space: nowrap;
+}
+
+/* Dialogs */
+.dw-dialog {
+  width: 460px;
+}
+.dw-dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+}
+.dw-dialog-hint {
+  margin: 0;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+.dw-dialog-error {
+  margin: 0;
+  color: var(--danger);
+}
+.dw-dialog-left {
+  margin-inline-end: auto;
+}
+.dw-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.dw-field > span:first-child {
+  font-weight: 600;
+}
+.dw-field input,
+.dw-field textarea {
+  min-height: var(--size-control);
+  padding: 4px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  resize: vertical;
+}
+.dw-field input:focus,
+.dw-field textarea:focus {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: -1px;
+}
+.dw-field-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.dw-field-row > span:first-child {
+  min-width: 56px;
+  font-weight: 400;
+}
+.dw-field-row input {
+  width: 80px;
+}
+.dw-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+}
+.dw-seg {
+  display: inline-flex;
+  align-self: flex-start;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.dw-seg button {
+  padding: 5px 14px;
+  border: 0;
+  border-inline-end: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--ink);
+}
+.dw-seg button:focus-visible {
+  outline-offset: -2px;
+}
+.dw-seg button:last-child {
+  border-inline-end: 0;
+}
+.dw-seg button.active {
+  background: var(--brand-subtle);
+  color: var(--brand-ink);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--brand);
+}
+.dw-stats {
+  width: 100%;
+  border-collapse: collapse;
+}
+.dw-stats th,
+.dw-stats td {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 400;
+  text-align: start;
+}
+.dw-stats td {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Printing (and Save as PDF): the text flows onto the printer's pages; @page (set while printing)
+   gives the size, the margins and the header and footer. */
+@media print {
+  .dw-printing .app.doc-app {
+    display: block !important;
+    height: auto;
+  }
+  .dw-printing .doc-app > :not(.dw-main),
+  .dw-printing .dw-findbar,
+  .dw-printing .dw-page,
+  .dw-printing .dw-spacer,
+  .dw-printing .column-resize-handle,
+  .dw-printing .dw-img-handle {
+    display: none !important;
+  }
+  .dw-printing .dw-main,
+  .dw-printing .dw-scroll,
+  .dw-printing .dw-sizer,
+  .dw-printing .dw-canvas,
+  .dw-printing .dw-host {
+    position: static !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: none !important;
+    transform: none !important;
+  }
+  .dw-printing .dw-page-break {
+    height: 0;
+    margin: 0;
+    break-after: page;
+  }
+  .dw-printing .dw-page-break::before,
+  .dw-printing .dw-page-break::after,
+  .dw-printing .dw-p::after {
+    content: none !important;
+  }
+  .dw-printing .dw-find,
+  .dw-printing .dw-check,
+  .dw-printing .dw-cb,
+  .dw-printing .selectedCell::after {
+    background: none !important;
+  }
+  .dw-printing .ProseMirror-selectednode,
+  .dw-printing .dw-imgwrap.selected .dw-img {
+    outline: none !important;
+  }
+  .dw-printing .dw-host tr,
+  .dw-printing .dw-img {
+    break-inside: avoid;
+  }
+}
