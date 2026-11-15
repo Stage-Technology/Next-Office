@@ -223,6 +223,13 @@ export async function exportAs(kind: Kind) {
 
 const cssString = (s: string) => `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\A ')}"`;
 
+/**
+ * Empty page-corner boxes. When a page defines margin boxes, WebView2 (Chromium) leaves out its own header and
+ * footer (date, title, URL, "1/1"), even with "Headers and footers" ticked in the print dialog. The corners
+ * are never used by the document's own header and footer, so these never hide them.
+ */
+const NO_BROWSER_HF = ['top-left', 'top-right', 'bottom-left', 'bottom-right'].map((c) => `@${c}-corner { content: ""; }`).join(' ');
+
 /** @page rules: the page size and margins, and the header and footer drawn in the margins. */
 export function pageCss(meta: DocMeta): string {
   const { page } = meta;
@@ -240,7 +247,7 @@ export function pageCss(meta: DocMeta): string {
           `vertical-align: ${pos === 'header' ? 'bottom' : 'top'}; padding: ${pos === 'header' ? '0 0 0.3in' : '0.3in 0 0'}; }`,
       );
   }
-  return `@page { size: ${page.width}in ${page.height}in; margin: ${m.top}in ${m.right}in ${m.bottom}in ${m.left}in; ${boxes.join(' ')} }`;
+  return `@page { size: ${page.width}in ${page.height}in; margin: ${m.top}in ${m.right}in ${m.bottom}in ${m.left}in; ${NO_BROWSER_HF} ${boxes.join(' ')} }`;
 }
 
 export function printDocument() {
