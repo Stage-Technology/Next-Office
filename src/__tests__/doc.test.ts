@@ -381,6 +381,13 @@ describe('Next Writer files and printing', () => {
     expect(css).toContain('@top-right { content: "Say \\"hi\\""');
     expect(css).toContain('@bottom-center { content: counter(page)');
   });
+
+  it("prints without the browser's own header and footer (date, title, URL, page count)", async () => {
+    const { pageCss } = await import('../doc/io');
+    // Chromium leaves out its header and footer when the page defines margin boxes; the corners are always empty.
+    const css = pageCss(blankMeta('x'));
+    for (const corner of ['top-left', 'top-right', 'bottom-left', 'bottom-right']) expect(css).toContain(`@${corner}-corner { content: ""; }`);
+  });
 });
 
 describe('pagination', () => {
