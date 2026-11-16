@@ -198,12 +198,23 @@ async function saveToPath(path: string, opts: { exportOnly?: boolean } = {}): Pr
   }
 }
 
+/** The document's name: its file's name without the extension, or the title of a document never saved. */
+export function documentName(): string {
+  const { filePath, meta } = useDoc.getState();
+  return filePath ? stem(filePath) : safeName(meta.title);
+}
+
+/** Where to suggest saving a copy as `ext`: next to the original file, under the same name. */
+export function suggestedPath(ext: string): string {
+  const { filePath } = useDoc.getState();
+  return filePath ? filePath.replace(/\.[^.\\/]+$/, `.${ext}`) : `${documentName()}.${ext}`;
+}
+
 export async function saveDocumentAs(): Promise<boolean> {
-  const { meta, filePath } = useDoc.getState();
+  const { filePath } = useDoc.getState();
   const kind = filePath && (kindOf(filePath) === 'native' || /\.docx$/i.test(filePath)) ? kindOf(filePath) : 'docx';
-  const suggested = filePath ? filePath.replace(/\.[^.\\/]+$/, `.${EXT[kind]}`) : `${safeName(meta.title)}.docx`;
   const filters = kind === 'native' ? [FILTER.native(), FILTER.docx()] : [FILTER.docx(), FILTER.native()];
-  const path = await showSaveDialog(suggested, filters);
+  const path = await showSaveDialog(suggestedPath(EXT[kind]), filters);
   return path ? saveToPath(path) : false;
 }
 
@@ -215,7 +226,7 @@ export async function saveDocument(): Promise<boolean> {
 }
 
 export async function exportAs(kind: Kind) {
-  const path = await showSaveDialog(`${safeName(useDoc.getState().meta.title)}.${EXT[kind]}`, [FILTER[kind]()]);
+  const path = await showSaveDialog(suggestedPath(EXT[kind]), [FILTER[kind]()]);
   if (path) await saveToPath(path, { exportOnly: true });
 }
 
@@ -255,8 +266,12 @@ export function printDocument() {
   style.textContent = pageCss(useDoc.getState().meta);
   document.head.appendChild(style);
   document.documentElement.classList.add('dw-printing');
+  // The print dialog's "Save as PDF" names the file after the page title, so use the document's name.
+  const pageTitle = document.title;
+  document.title = documentName();
   const done = () => {
     style.remove();
+    document.title = pageTitle;
     document.documentElement.classList.remove('dw-printing');
     window.removeEventListener('afterprint', done);
   };

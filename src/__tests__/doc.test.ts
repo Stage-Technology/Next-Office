@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import JSZip from 'jszip';
 import { EditorState, TextSelection, type Command } from 'prosemirror-state';
 import { EditorView } from 'prosemirror-view';
@@ -380,6 +380,35 @@ describe('Next Writer files and printing', () => {
     expect(css).toContain('margin: 1in 1in 1in 1in');
     expect(css).toContain('@top-right { content: "Say \\"hi\\""');
     expect(css).toContain('@bottom-center { content: counter(page)');
+  });
+
+  it("names copies and PDFs after the document's file", async () => {
+    vi.useFakeTimers();
+    const { documentName, suggestedPath, printDocument } = await import('../doc/io');
+    const { useDoc } = await import('../doc/store');
+    const print = vi.spyOn(window, 'print').mockImplementation(() => {});
+    try {
+      useDoc.setState({ filePath: 'C:\\Docs\\Hussein CV.docx', meta: { ...blankMeta('Résumé') } });
+      expect(documentName()).toBe('Hussein CV');
+      expect(suggestedPath('pdf')).toBe('C:\\Docs\\Hussein CV.pdf');
+      expect(suggestedPath('txt')).toBe('C:\\Docs\\Hussein CV.txt');
+
+      // Save as PDF goes through the print dialog, which names the file after the page title.
+      document.title = 'Next Office';
+      printDocument();
+      vi.runAllTimers();
+      expect(print).toHaveBeenCalled();
+      expect(document.title).toBe('Hussein CV');
+      window.dispatchEvent(new Event('afterprint'));
+      expect(document.title).toBe('Next Office');
+
+      // A document never saved: its title, made safe for a file name.
+      useDoc.setState({ filePath: null, meta: { ...blankMeta('Q3: plan?') } });
+      expect(suggestedPath('docx')).toBe('Q3 plan.docx');
+    } finally {
+      print.mockRestore();
+      vi.useRealTimers();
+    }
   });
 
   it("prints without the browser's own header and footer (date, title, URL, page count)", async () => {
