@@ -1,6 +1,6 @@
 [package]
 name = "next-office-slides"
-version = "0.4.1"
+version = "0.4.2"
 description = "Next Office Slides for Windows"
 edition = "2021"
 
